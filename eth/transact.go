@@ -34,6 +34,7 @@ func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int
 		Value:    param.EthValue,
 		GasPrice: param.GasPrice,
 		GasLimit: uint64(gasLimit),
+		Context: context.Background(),
 	}
 	return txOpts, nil
 }
