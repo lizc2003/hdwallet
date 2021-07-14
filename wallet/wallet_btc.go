@@ -2,6 +2,7 @@ package wallet
 
 import (
 	"encoding/hex"
+	"errors"
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/txscript"
@@ -10,6 +11,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts"
 	"log"
 )
+
+var ErrAddressNotMatch = errors.New("address not match")
 
 type BtcWallet struct {
 	symbol     string
@@ -28,6 +31,9 @@ func NewBtcWallet(privateKey string, chainId int, segWitType SegWitType) (*BtcWa
 	wif, err := btcutil.DecodeWIF(privateKey)
 	if err != nil {
 		return nil, err
+	}
+	if !wif.IsForNet(chainCfg) {
+		return nil, errors.New("key network doesn't match")
 	}
 
 	return &BtcWallet{symbol: SymbolBtc,
@@ -59,6 +65,10 @@ func NewBtcWalletByPath(path string, seed []byte, chainId int, segWitType SegWit
 
 func (w *BtcWallet) ChainId() int {
 	return int(w.chainCfg.Net)
+}
+
+func (w *BtcWallet) ChainParams() *chaincfg.Params {
+	return w.chainCfg
 }
 
 func (w *BtcWallet) Symbol() string {
@@ -139,4 +149,16 @@ func DerivePrivateKeyByPath(masterKey *hdkeychain.ExtendedKey, path string, fixI
 		return nil, err
 	}
 	return privateKey, nil
+}
+
+// txauthor.SecretsSource
+func (w *BtcWallet) GetKey(addr btcutil.Address) (*btcec.PrivateKey, bool, error) {
+	if w.DeriveAddress() == addr.EncodeAddress() {
+		return w.privateKey, true, nil
+	}
+	return nil, false, ErrAddressNotMatch
+}
+
+func (w *BtcWallet) GetScript(addr btcutil.Address) ([]byte, error) {
+	return nil, errors.New("GetScript not supported")
 }

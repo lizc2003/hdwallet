@@ -71,6 +71,10 @@ func (w *EthWallet) ChainId() int {
 	return w.chainId
 }
 
+func (w *EthWallet) ChainParams() *params.ChainConfig {
+	return w.chainCfg
+}
+
 func (w *EthWallet) Symbol() string {
 	return w.symbol
 }
