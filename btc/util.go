@@ -28,7 +28,7 @@ func EstimateFee(numP2PKHIns, numP2WPKHIns, numNestedP2WPKHIns int,
 	feeRatePerKb := btcutil.Amount(feeRate * 1000)
 	if changeScriptSize < 0 {
 		// using P2WPKH as change output.
-		changeScriptSize = txsizes.P2WPKHOutputSize
+		changeScriptSize = txsizes.P2WPKHPkScriptSize
 	}
 
 	txOuts, err := makeTxOutputs(outputs, feeRatePerKb, chainCfg)
