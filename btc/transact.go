@@ -1,9 +1,11 @@
 package btc
 
 import (
+	"bytes"
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/btcsuite/btcd/btcjson"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
@@ -16,11 +18,11 @@ import (
 )
 
 type BtcUnspent struct {
-	TxID         string `json:"txid"`
-	Vout         uint32 `json:"vout"`
-	ScriptPubKey string `json:"scriptPubKey"`
-	//RedeemScript string  `json:"redeemScript,omitempty"`
-	Amount float64 `json:"amount"`
+	TxID         string  `json:"txid"`
+	Vout         uint32  `json:"vout"`
+	ScriptPubKey string  `json:"scriptPubKey"`
+	RedeemScript string  `json:"redeemScript,omitempty"`
+	Amount       float64 `json:"amount"`
 }
 
 type BtcOutput struct {
@@ -30,9 +32,10 @@ type BtcOutput struct {
 
 type BtcTransaction struct {
 	txauthor.AuthoredTx
+	chainParams *chaincfg.Params
 }
 
-func NewUnsignedTx(unspents []BtcUnspent, outputs []BtcOutput,
+func NewBtcTransaction(unspents []BtcUnspent, outputs []BtcOutput,
 	changeAddress btcutil.Address, feeRate int, chainCfg *chaincfg.Params) (*BtcTransaction, error) {
 
 	if len(unspents) == 0 || changeAddress == nil || feeRate <= 0 {
@@ -71,7 +74,7 @@ func NewUnsignedTx(unspents []BtcUnspent, outputs []BtcOutput,
 		unsignedTx.RandomizeChangePosition()
 	}
 
-	return &BtcTransaction{*unsignedTx}, nil
+	return &BtcTransaction{*unsignedTx, chainCfg}, nil
 }
 
 func (t *BtcTransaction) Sign(wallet *wallet.BtcWallet) error {
@@ -96,12 +99,29 @@ func (t *BtcTransaction) GetFee() int64 {
 	return int64(fee)
 }
 
-func (t *BtcTransaction) Send(client *rpcclient.Client, allowHighFees bool) (string, error) {
-	hash, err := client.SendRawTransaction(t.Tx, allowHighFees)
-	if err != nil {
+func (t *BtcTransaction) Serialize() (string, error) {
+	// Serialize the transaction and convert to hex string.
+	buf := bytes.NewBuffer(make([]byte, 0, t.Tx.SerializeSize()))
+	if err := t.Tx.Serialize(buf); err != nil {
 		return "", err
 	}
-	return hash.String(), nil
+	return hex.EncodeToString(buf.Bytes()), nil
+}
+
+func (t *BtcTransaction) GetTxid() string {
+	return t.Tx.TxHash().String()
+}
+
+func (t *BtcTransaction) Decode() *btcjson.TxRawDecodeResult {
+	return DecodeMsgTx(t.Tx, t.chainParams)
+}
+
+func (t *BtcTransaction) Send(client *rpcclient.Client, allowHighFees bool) (*chainhash.Hash, error) {
+	hash, err := client.SendRawTransaction(t.Tx, allowHighFees)
+	if err != nil {
+		return nil, err
+	}
+	return hash, nil
 }
 
 func (t *BtcTransaction) validate() error {
