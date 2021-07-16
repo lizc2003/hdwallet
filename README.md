@@ -8,10 +8,10 @@ Please refer to the test case in the qa directory
 
 ## Keywords
 
-ocrypto wallet
-transaction sign
-btc segwit address
-P2WPKH
-P2WPKH in P2SH
-eth erc20
-eth erc721
+ocrypto wallet  
+transaction sign  
+btc segwit address  
+P2WPKH  
+P2WPKH in P2SH  
+eth erc20  
+eth erc721  
