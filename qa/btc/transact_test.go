@@ -110,6 +110,7 @@ func TestTransaction(t *testing.T) {
 	{ // send
 		hash, err := tx.Send(cli.RpcClient, false)
 		rq.Nil(err)
+
 		txid := hash.String()
 		fmt.Println("txid:", txid)
 		rq.Equal(txid, tx.GetTxid(), "txid mismatch")

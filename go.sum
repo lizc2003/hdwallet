@@ -67,12 +67,9 @@ github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d/go.mod h1:+5NJ2+q
 github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce/go.mod h1:0DVlHczLPewLcPGEIeUEzfOJhqGPQ0mJJRDBtD307+o=
 github.com/btcsuite/btcutil v1.0.3-0.20210527170813-e2ba6805a890 h1:9aGy5p7oXRUB4MCTmWm0+jzuh79GpjPIfv1leA5POD4=
 github.com/btcsuite/btcutil v1.0.3-0.20210527170813-e2ba6805a890/go.mod h1:0DVlHczLPewLcPGEIeUEzfOJhqGPQ0mJJRDBtD307+o=
-github.com/btcsuite/btcwallet/wallet/txauthor v1.0.1 h1:dFczjBhYs4sjuwlfmmnjoaTl/SIf+B16RjRWdbAdMK8=
 github.com/btcsuite/btcwallet/wallet/txauthor v1.0.1/go.mod h1:VufDts7bd/zs3GV13f/lXc/0lXrPnvxD/NvmpG/FEKU=
-github.com/btcsuite/btcwallet/wallet/txrules v1.0.0 h1:2VsfS0sBedcM5KmDzRMT3+b6xobqWveZGvjb+jFez5w=
 github.com/btcsuite/btcwallet/wallet/txrules v1.0.0/go.mod h1:UwQE78yCerZ313EXZwEiu3jNAtfXj2n2+c8RWiE/WNA=
 github.com/btcsuite/btcwallet/wallet/txsizes v1.0.0/go.mod h1:pauEU8UuMFiThe5PB3EO+gO5kx87Me5NvdQDsTuq6cs=
-github.com/btcsuite/btcwallet/wallet/txsizes v1.0.1 h1:HW4T68f3kL1R7x4P47tE8ehz7Oz+KwJh1dVpWqWI3b0=
 github.com/btcsuite/btcwallet/wallet/txsizes v1.0.1/go.mod h1:pauEU8UuMFiThe5PB3EO+gO5kx87Me5NvdQDsTuq6cs=
 github.com/btcsuite/go-socks v0.0.0-20170105172521-4720035b7bfd/go.mod h1:HHNXQzUsZCxOoE+CPiyCTO6x34Zs86zZUiwtpXoGdtg=
 github.com/btcsuite/goleveldb v0.0.0-20160330041536-7834afc9e8cd/go.mod h1:F+uVaaLLH7j4eDXPRvw78tMflu7Ie2bzYOH4Y8rRKBY=

@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"github.com/lizc2003/hdwallet/wallet"
+	"log"
 )
 
 func main() {

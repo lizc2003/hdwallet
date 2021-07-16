@@ -2,6 +2,7 @@ package eth
 
 import (
 	"context"
+	"errors"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
@@ -18,12 +19,21 @@ func NewEthClient(rawurl string) (*EthClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	ethClient := ethclient.NewClient(client)
-	return &EthClient{RpcClient: ethClient, client: client}, nil
+	rpcClient := ethclient.NewClient(client)
+	return &EthClient{RpcClient: rpcClient, client: client}, nil
 }
 
 func (this *EthClient) GetTransactionCountByNumber(ctx context.Context, blockNumber int64) (uint, error) {
 	var num hexutil.Uint
 	err := this.client.CallContext(ctx, &num, "eth_getBlockTransactionCountByNumber", hexutil.EncodeBig(big.NewInt(blockNumber)))
 	return uint(num), err
+}
+
+func (this *EthClient) SendRawTransaction(ctx context.Context, signedHex string) (string, error) {
+	var txid string
+	err := this.client.CallContext(ctx, &txid, "eth_sendRawTransaction", signedHex)
+	if err == nil && txid == "" {
+		err = errors.New("SendRawTransaction: txid is empty")
+	}
+	return txid, err
 }

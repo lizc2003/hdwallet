@@ -8,9 +8,10 @@ Please refer to the test case in the qa directory
 
 ## Keywords
 
-ocrypto wallet  
+crypto wallet  
 transaction sign  
 btc segwit address  
+rpc client
 P2WPKH  
 P2WPKH in P2SH  
 eth erc20  

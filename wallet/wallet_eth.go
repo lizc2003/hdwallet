@@ -108,10 +108,5 @@ func (w *EthWallet) SignTx(tx *types.Transaction) (*types.Transaction, error) {
 		return nil, err
 	}
 
-	//rlpData, err := rlp.EncodeToBytes(signedTx)
-	//if err != nil {
-	//	return "", err
-	//}
-	//return hexutil.Encode(rlpData), nil
 	return signedTx, nil
 }

@@ -13,7 +13,6 @@ import (
 	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcwallet/wallet/txauthor"
-	"github.com/btcsuite/btcwallet/wallet/txrules"
 	"github.com/lizc2003/hdwallet/wallet"
 )
 
@@ -163,9 +162,10 @@ func makeTxOutputs(outputs []BtcOutput, relayFeePerKb btcutil.Amount, chainCfg *
 			Value:    out.Amount,
 			PkScript: pkScript,
 		}
-		if err = txrules.CheckOutput(txOut, relayFeePerKb); err != nil {
-			return nil, err
-		}
+
+		//if err = txrules.CheckOutput(txOut, relayFeePerKb); err != nil {
+		//	return nil, err
+		//}
 
 		txOuts = append(txOuts, txOut)
 	}

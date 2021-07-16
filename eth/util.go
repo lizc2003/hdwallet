@@ -3,6 +3,8 @@ package eth
 import (
 	"errors"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/core/types"
 	"math/big"
 )
 
@@ -26,4 +28,12 @@ func GweiToWei(v int64) *big.Int {
 
 func CalcEthFee(gasPrice *big.Int, gas int64) int64 {
 	return WeiToGwei(big.NewInt(0).Mul(big.NewInt(gas), gasPrice))
+}
+
+func SerializeTransaction(tx *types.Transaction) (string, error) {
+	data, err := tx.MarshalBinary()
+	if err != nil {
+		return "", err
+	}
+	return hexutil.Encode(data), nil
 }

@@ -32,10 +32,8 @@ const (
 	SegWitScript SegWitType = 1
 	SegWitNative SegWitType = 2
 
-	// ChangeTypeExternal 通常用于收款，对外部可见
 	ChangeTypeExternal = 0
-	// ChangeTypeInternal 通常用于找零，通常不对外可见
-	ChangeTypeInternal = 1
+	ChangeTypeInternal = 1 // Usually used for change, not visible to the outside world
 
 	SatoshiPerBitcoin = 1e8
 	GweiPerEther      = 1e9

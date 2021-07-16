@@ -5,8 +5,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"math/big"
 	"github.com/lizc2003/hdwallet/wallet"
+	"math/big"
 )
 
 type TransactBaseParam struct {
@@ -34,7 +34,7 @@ func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int
 		Value:    param.EthValue,
 		GasPrice: param.GasPrice,
 		GasLimit: uint64(gasLimit),
-		Context: context.Background(),
+		Context:  context.Background(),
 	}
 	return txOpts, nil
 }

@@ -1,6 +1,7 @@
 package btc
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/lizc2003/hdwallet/wallet"
@@ -44,4 +45,29 @@ func (this *BtcClient) EstimateFeePerKb() (int64, error) {
 	} else {
 		return 0, errors.New("Fee not available")
 	}
+}
+
+// https://bitcoincore.org/en/doc/0.21.0/rpc/rawtransactions/sendrawtransaction/
+func (this *BtcClient) SendRawTransaction(signedHex string, allowHighFees bool) (string, error) {
+	hex, _ := json.Marshal(signedHex)
+	params := []json.RawMessage{hex}
+	if allowHighFees {
+		maxFeeRate, _ := json.Marshal(0)
+		params = append(params, maxFeeRate)
+	}
+
+	resp, err := this.RpcClient.RawRequest("sendrawtransaction", params)
+	if err != nil {
+		return "", err
+	}
+
+	var txid string
+	err = json.Unmarshal(resp, &txid)
+	if err == nil && txid == "" {
+		err = errors.New("unknown response")
+	}
+	if err != nil {
+		return "", err
+	}
+	return txid, nil
 }
