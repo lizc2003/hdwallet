@@ -92,7 +92,7 @@ func RunBitcoind(optionsPtr *RunOptions) (*btc.BtcClient, func(), error) {
 	go func() {
 		fmt.Println("Wait for message to kill bitcoind")
 		<-closeChan
-		fmt.Println("Received message, killing bitcoind...")
+		fmt.Println("Received message, killing bitcoind ...")
 
 		if e := cmd.Process.Kill(); e != nil {
 			fmt.Println("kill bitcoind error:", e)

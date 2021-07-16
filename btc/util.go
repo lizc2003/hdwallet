@@ -23,9 +23,9 @@ func SatoshiToBtc(v int64) float64 {
 }
 
 func EstimateFee(numP2PKHIns, numP2WPKHIns, numNestedP2WPKHIns int,
-	outputs []BtcOutput, feeRate int64, changeScriptSize int, chainCfg *chaincfg.Params) (int64, int64, error) {
+	outputs []BtcOutput, feePerKb int64, changeScriptSize int, chainCfg *chaincfg.Params) (int64, int64, error) {
 
-	feeRatePerKb := btcutil.Amount(feeRate * 1000)
+	feeRatePerKb := btcutil.Amount(feePerKb)
 	if changeScriptSize < 0 {
 		// using P2WPKH as change output.
 		changeScriptSize = txsizes.P2WPKHPkScriptSize

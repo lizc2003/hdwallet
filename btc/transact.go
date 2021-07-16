@@ -36,9 +36,9 @@ type BtcTransaction struct {
 }
 
 func NewBtcTransaction(unspents []BtcUnspent, outputs []BtcOutput,
-	changeAddress btcutil.Address, feeRate int, chainCfg *chaincfg.Params) (*BtcTransaction, error) {
+	changeAddress btcutil.Address, feePerKb int64, chainCfg *chaincfg.Params) (*BtcTransaction, error) {
 
-	if len(unspents) == 0 || changeAddress == nil || feeRate <= 0 {
+	if len(unspents) == 0 || changeAddress == nil || feePerKb <= 0 {
 		return nil, errors.New("wrong params")
 	}
 	if !changeAddress.IsForNet(chainCfg) {
@@ -49,7 +49,7 @@ func NewBtcTransaction(unspents []BtcUnspent, outputs []BtcOutput,
 		return nil, err
 	}
 
-	feeRatePerKb := btcutil.Amount(int64(feeRate) * 1000)
+	feeRatePerKb := btcutil.Amount(feePerKb)
 
 	txOuts, err := makeTxOutputs(outputs, feeRatePerKb, chainCfg)
 	if err != nil {

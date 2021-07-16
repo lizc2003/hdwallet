@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestRegtest(t *testing.T) {
+func TestTransaction(t *testing.T) {
 	rq := require.New(t)
 
 	cli, killBitcoind, err := RunBitcoind(&RunOptions{NewTmpDir: true})
@@ -74,6 +74,10 @@ func TestRegtest(t *testing.T) {
 	var tx *btc.BtcTransaction
 
 	{ // build tx
+		//feePerKb, err := cli.EstimateFeePerKb()
+		//rq.Nil(err)
+		feePerKb := int64(80 * 1000)
+
 		unspent := btc.BtcUnspent{TxID: utxo.TxID, Vout: utxo.Vout,
 			ScriptPubKey: utxo.ScriptPubKey, RedeemScript: utxo.RedeemScript,
 			Amount: utxo.Amount}
@@ -81,10 +85,9 @@ func TestRegtest(t *testing.T) {
 		out1 := btc.BtcOutput{Address: addrA1, Amount: btc.BtcToSatoshi(transferAmount)}
 		out2 := btc.BtcOutput{Address: addrA2, Amount: btc.BtcToSatoshi(transferAmount)}
 		out3 := btc.BtcOutput{Address: addrA3, Amount: btc.BtcToSatoshi(transferAmount)}
-		feeRate := 80
 
 		tx, err = btc.NewBtcTransaction([]btc.BtcUnspent{unspent}, []btc.BtcOutput{out1, out2, out3},
-			addrA0, feeRate, chainCfg)
+			addrA0, feePerKb, chainCfg)
 		rq.Nil(err)
 	}
 
