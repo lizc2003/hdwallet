@@ -32,6 +32,7 @@ type BtcOutput struct {
 type BtcTransaction struct {
 	txauthor.AuthoredTx
 	chainParams *chaincfg.Params
+	feePerKb    int64
 }
 
 func NewBtcTransaction(unspents []BtcUnspent, outputs []BtcOutput,
@@ -73,7 +74,7 @@ func NewBtcTransaction(unspents []BtcUnspent, outputs []BtcOutput,
 		unsignedTx.RandomizeChangePosition()
 	}
 
-	return &BtcTransaction{*unsignedTx, chainCfg}, nil
+	return &BtcTransaction{*unsignedTx, chainCfg, feePerKb}, nil
 }
 
 func (t *BtcTransaction) Sign(wallet *wallet.BtcWallet) error {
@@ -96,6 +97,14 @@ func (t *BtcTransaction) SignWithSecretsSource(secretsSource txauthor.SecretsSou
 func (t *BtcTransaction) GetFee() int64 {
 	fee := t.TotalInput - txauthor.SumOutputValues(t.Tx.TxOut)
 	return int64(fee)
+}
+
+func (t *BtcTransaction) GetFeePerKb() int64 {
+	return t.feePerKb
+}
+
+func (t *BtcTransaction) HasChange() bool {
+	return t.ChangeIndex >= 0
 }
 
 func (t *BtcTransaction) Serialize() (string, error) {

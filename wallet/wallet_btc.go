@@ -75,7 +75,7 @@ func (w *BtcWallet) Symbol() string {
 	return w.symbol
 }
 
-func (w *BtcWallet) DeriveAddress() string {
+func (w *BtcWallet) DeriveBtcAddress() btcutil.Address {
 	switch w.segWitType {
 	case SegWitNone:
 		pk := w.publicKey.SerializeCompressed()
@@ -83,32 +83,40 @@ func (w *BtcWallet) DeriveAddress() string {
 		p2pkhAddr, err := btcutil.NewAddressPubKeyHash(keyHash, w.chainCfg)
 		if err != nil {
 			log.Println("DeriveAddress error:", err)
-			return ""
+			return nil
 		}
-		return p2pkhAddr.String()
+		return p2pkhAddr
 	case SegWitScript:
 		pk := w.publicKey.SerializeCompressed()
 		keyHash := btcutil.Hash160(pk)
 		scriptSig, err := txscript.NewScriptBuilder().AddOp(txscript.OP_0).AddData(keyHash).Script()
 		if err != nil {
 			log.Println("DeriveAddress error:", err)
-			return ""
+			return nil
 		}
 		addr, err := btcutil.NewAddressScriptHash(scriptSig, w.chainCfg)
 		if err != nil {
 			log.Println("DeriveAddress error:", err)
-			return ""
+			return nil
 		}
-		return addr.String()
+		return addr
 	case SegWitNative:
 		pk := w.publicKey.SerializeCompressed()
 		keyHash := btcutil.Hash160(pk)
 		p2wpkh, err := btcutil.NewAddressWitnessPubKeyHash(keyHash, w.chainCfg)
 		if err != nil {
 			log.Println("DeriveAddress error:", err)
-			return ""
+			return nil
 		}
-		return p2wpkh.String()
+		return p2wpkh
+	}
+	return nil
+}
+
+func (w *BtcWallet) DeriveAddress() string {
+	addr := w.DeriveBtcAddress()
+	if addr != nil {
+		return addr.EncodeAddress()
 	}
 	return ""
 }

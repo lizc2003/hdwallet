@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcutil/hdkeychain"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/params"
@@ -77,6 +78,10 @@ func (w *EthWallet) ChainParams() *params.ChainConfig {
 
 func (w *EthWallet) Symbol() string {
 	return w.symbol
+}
+
+func (w *EthWallet) DeriveEthAddress() common.Address {
+	return crypto.PubkeyToAddress(*w.publicKey)
 }
 
 func (w *EthWallet) DeriveAddress() string {
