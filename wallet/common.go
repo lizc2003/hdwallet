@@ -37,6 +37,7 @@ const (
 
 	SatoshiPerBitcoin = 1e8
 	GweiPerEther      = 1e9
+	WeiPerGwei        = 1e9
 	WeiPerEther       = 1e18
 
 	EtherTransferGas = 21000
