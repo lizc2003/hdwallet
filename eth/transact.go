@@ -10,9 +10,11 @@ import (
 )
 
 type TransactBaseParam struct {
-	From     common.Address
-	GasPrice *big.Int
-	EthValue *big.Int
+	From      common.Address
+	GasPrice  *big.Int
+	GasFeeCap *big.Int
+	GasTipCap *big.Int
+	EthValue  *big.Int
 }
 
 func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int64, nonce int64) (*bind.TransactOpts, error) {
@@ -31,10 +33,12 @@ func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int
 		Signer: func(address common.Address, tx *types.Transaction) (*types.Transaction, error) {
 			return w.SignTx(tx)
 		},
-		Value:    param.EthValue,
-		GasPrice: param.GasPrice,
-		GasLimit: uint64(gasLimit),
-		Context:  context.Background(),
+		Value:     param.EthValue,
+		GasPrice:  param.GasPrice,
+		GasFeeCap: param.GasFeeCap,
+		GasTipCap: param.GasTipCap,
+		GasLimit:  uint64(gasLimit),
+		Context:   context.Background(),
 	}
 	return txOpts, nil
 }
@@ -56,7 +60,31 @@ func TransferEther(opts *bind.TransactOpts, backend bind.ContractBackend, addres
 		gasLimit = wallet.EtherTransferGas
 	}
 
-	tx := types.NewTransaction(nonce, addressTo, opts.Value, gasLimit, opts.GasPrice, nil)
+	var tx *types.Transaction
+	var input []byte
+	if opts.GasFeeCap == nil {
+		baseTx := &types.LegacyTx{
+			Nonce:    nonce,
+			To:       &addressTo,
+			GasPrice: opts.GasPrice,
+			Gas:      gasLimit,
+			Value:    opts.Value,
+			Data:     input,
+		}
+		tx = types.NewTx(baseTx)
+	} else {
+		baseTx := &types.DynamicFeeTx{
+			Nonce:     nonce,
+			To:        &addressTo,
+			GasFeeCap: opts.GasFeeCap,
+			GasTipCap: opts.GasTipCap,
+			Gas:       gasLimit,
+			Value:     opts.Value,
+			Data:      input,
+		}
+		tx = types.NewTx(baseTx)
+	}
+
 	signedTx, err := opts.Signer(opts.From, tx)
 	if err != nil {
 		return nil, err

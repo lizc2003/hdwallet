@@ -231,7 +231,12 @@ func (this *Erc721Contract) EstimateMethodGas(param TransactBaseParam, input []b
 	if ethValue == nil {
 		ethValue = big.NewInt(0)
 	}
-	msg := ethereum.CallMsg{From: param.From, To: &this.contractAddress, GasPrice: param.GasPrice, Value: ethValue, Data: input}
+	msg := ethereum.CallMsg{From: param.From, To: &this.contractAddress,
+		GasPrice:  param.GasPrice,
+		GasFeeCap: param.GasFeeCap,
+		GasTipCap: param.GasTipCap,
+		Value:     ethValue, Data: input}
+
 	gasLimit, err := this.backend.EstimateGas(context.Background(), msg)
 	if err != nil {
 		return 0, fmt.Errorf("failed to estimate gas needed: %v", err)
