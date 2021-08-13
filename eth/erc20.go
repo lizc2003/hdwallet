@@ -1,9 +1,6 @@
 package eth
 
 import (
-	"context"
-	"fmt"
-	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -118,7 +115,7 @@ func (this *Erc20Contract) EstimateTransferGas(param TransactBaseParam, to commo
 	if err != nil {
 		return 0, err
 	}
-	return this.EstimateMethodGas(param, input)
+	return EstimateContractMethodGas(param, this.backend, this.contractAddress, input)
 }
 
 func (this *Erc20Contract) EstimateApproveGas(param TransactBaseParam, spender common.Address, tokens *big.Int) (int64, error) {
@@ -126,7 +123,7 @@ func (this *Erc20Contract) EstimateApproveGas(param TransactBaseParam, spender c
 	if err != nil {
 		return 0, err
 	}
-	return this.EstimateMethodGas(param, input)
+	return EstimateContractMethodGas(param, this.backend, this.contractAddress, input)
 }
 
 func (this *Erc20Contract) EstimateTransferFromGas(param TransactBaseParam, from common.Address, to common.Address, tokens *big.Int) (int64, error) {
@@ -134,23 +131,5 @@ func (this *Erc20Contract) EstimateTransferFromGas(param TransactBaseParam, from
 	if err != nil {
 		return 0, err
 	}
-	return this.EstimateMethodGas(param, input)
-}
-
-func (this *Erc20Contract) EstimateMethodGas(param TransactBaseParam, input []byte) (int64, error) {
-	ethValue := param.EthValue
-	if ethValue == nil {
-		ethValue = big.NewInt(0)
-	}
-	msg := ethereum.CallMsg{From: param.From, To: &this.contractAddress,
-		GasPrice:  param.GasPrice,
-		GasFeeCap: param.GasFeeCap,
-		GasTipCap: param.GasTipCap,
-		Value:     ethValue, Data: input}
-
-	gasLimit, err := this.backend.EstimateGas(context.Background(), msg)
-	if err != nil {
-		return 0, fmt.Errorf("failed to estimate gas needed: %v", err)
-	}
-	return int64(gasLimit), nil
+	return EstimateContractMethodGas(param, this.backend, this.contractAddress, input)
 }

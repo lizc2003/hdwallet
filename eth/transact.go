@@ -2,6 +2,7 @@ package eth
 
 import (
 	"context"
+	"fmt"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -11,10 +12,46 @@ import (
 
 type TransactBaseParam struct {
 	From      common.Address
+	EthValue  *big.Int
 	GasPrice  *big.Int
 	GasFeeCap *big.Int
 	GasTipCap *big.Int
-	EthValue  *big.Int
+}
+
+func EnsureTransactGasPrice(backend bind.ContractBackend, param *TransactBaseParam) error {
+	head, err := backend.HeaderByNumber(context.Background(), nil)
+	if err != nil {
+		return err
+	}
+
+	if head.BaseFee == nil {
+		if param.GasPrice == nil {
+			price, err := backend.SuggestGasPrice(context.Background())
+			if err != nil {
+				return err
+			}
+			param.GasPrice = price
+		}
+	} else {
+		if param.GasTipCap == nil {
+			tip, err := backend.SuggestGasTipCap(context.Background())
+			if err != nil {
+				return err
+			}
+			param.GasTipCap = tip
+		}
+		if param.GasFeeCap == nil {
+			gasFeeCap := new(big.Int).Add(
+				param.GasTipCap,
+				new(big.Int).Mul(head.BaseFee, big.NewInt(2)),
+			)
+			param.GasFeeCap = gasFeeCap
+		}
+		if param.GasFeeCap.Cmp(param.GasTipCap) < 0 {
+			return fmt.Errorf("maxFeePerGas (%v) < maxPriorityFeePerGas (%v)", param.GasFeeCap, param.GasTipCap)
+		}
+	}
+	return nil
 }
 
 func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int64, nonce int64) (*bind.TransactOpts, error) {
@@ -59,6 +96,18 @@ func TransferEther(opts *bind.TransactOpts, backend bind.ContractBackend, addres
 	if gasLimit == 0 {
 		gasLimit = wallet.EtherTransferGas
 	}
+
+	param := TransactBaseParam{GasPrice: opts.GasPrice,
+		GasFeeCap: opts.GasFeeCap,
+		GasTipCap: opts.GasTipCap,
+	}
+	err := EnsureTransactGasPrice(backend, &param)
+	if err != nil {
+		return nil, err
+	}
+	opts.GasPrice = param.GasPrice
+	opts.GasFeeCap = param.GasFeeCap
+	opts.GasTipCap = param.GasTipCap
 
 	var tx *types.Transaction
 	var input []byte
