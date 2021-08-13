@@ -16,42 +16,52 @@ type TransactBaseParam struct {
 	GasPrice  *big.Int
 	GasFeeCap *big.Int
 	GasTipCap *big.Int
+	BaseFee   *big.Int
 }
 
-func EnsureTransactGasPrice(backend bind.ContractBackend, param *TransactBaseParam) error {
+func (this *TransactBaseParam) EnsureGasPrice(backend bind.ContractBackend) error {
 	head, err := backend.HeaderByNumber(context.Background(), nil)
 	if err != nil {
 		return err
 	}
+	this.BaseFee = head.BaseFee
 
 	if head.BaseFee == nil {
-		if param.GasPrice == nil {
+		if this.GasPrice == nil {
 			price, err := backend.SuggestGasPrice(context.Background())
 			if err != nil {
 				return err
 			}
-			param.GasPrice = price
+			this.GasPrice = price
 		}
 	} else {
-		if param.GasTipCap == nil {
+		if this.GasTipCap == nil {
 			tip, err := backend.SuggestGasTipCap(context.Background())
 			if err != nil {
 				return err
 			}
-			param.GasTipCap = tip
+			this.GasTipCap = tip
 		}
-		if param.GasFeeCap == nil {
+		if this.GasFeeCap == nil {
 			gasFeeCap := new(big.Int).Add(
-				param.GasTipCap,
+				this.GasTipCap,
 				new(big.Int).Mul(head.BaseFee, big.NewInt(2)),
 			)
-			param.GasFeeCap = gasFeeCap
+			this.GasFeeCap = gasFeeCap
 		}
-		if param.GasFeeCap.Cmp(param.GasTipCap) < 0 {
-			return fmt.Errorf("maxFeePerGas (%v) < maxPriorityFeePerGas (%v)", param.GasFeeCap, param.GasTipCap)
+		if this.GasFeeCap.Cmp(this.GasTipCap) < 0 {
+			return fmt.Errorf("maxFeePerGas (%v) < maxPriorityFeePerGas (%v)", this.GasFeeCap, this.GasTipCap)
 		}
 	}
 	return nil
+}
+
+func (this *TransactBaseParam) GetGasPrice() *big.Int {
+	if this.BaseFee != nil {
+		return new(big.Int).Add(this.BaseFee, this.GasTipCap)
+	} else {
+		return this.GasPrice
+	}
 }
 
 func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int64, nonce int64) (*bind.TransactOpts, error) {
@@ -101,7 +111,7 @@ func TransferEther(opts *bind.TransactOpts, backend bind.ContractBackend, addres
 		GasFeeCap: opts.GasFeeCap,
 		GasTipCap: opts.GasTipCap,
 	}
-	err := EnsureTransactGasPrice(backend, &param)
+	err := param.EnsureGasPrice(backend)
 	if err != nil {
 		return nil, err
 	}

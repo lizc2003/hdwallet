@@ -25,7 +25,7 @@ func DeployContract(opts *bind.TransactOpts, backend bind.ContractBackend, jsonA
 }
 
 func EstimateContractMethodGas(param TransactBaseParam, backend bind.ContractBackend, contractAddress common.Address, input []byte) (int64, error) {
-	err := EnsureTransactGasPrice(backend, &param)
+	err := param.EnsureGasPrice(backend)
 	if err != nil {
 		return 0, err
 	}
