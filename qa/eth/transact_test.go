@@ -63,16 +63,17 @@ func TestTransaction(t *testing.T) {
 	}
 
 	transferAmount := big.NewInt(6 * wallet.WeiPerEther)
-	gasPrice, err := cli.RpcClient.SuggestGasPrice(context.Background())
 	rq.Nil(err)
 
 	{ // Transfer ether
 
-		opts, err := eth.MakeTransactOpts(w0.(*wallet.EthWallet), eth.TransactBaseParam{
+		baseParam := eth.TransactBaseParam{
 			From:     addrA0,
-			GasPrice: gasPrice,
 			EthValue: transferAmount,
-		}, -1, -1)
+		}
+		err = baseParam.EnsureGasPrice(cli.RpcClient)
+		rq.Nil(err)
+		opts, err := eth.MakeTransactOpts(w0.(*wallet.EthWallet), baseParam, -1, -1)
 		rq.Nil(err)
 
 		tx, err := eth.TransferEther(opts, cli.RpcClient, addrA1)
@@ -80,7 +81,7 @@ func TestTransaction(t *testing.T) {
 
 		fmt.Println("txid:", tx.Hash())
 		fmt.Printf("transfer ether, gas: %d\n", tx.Gas())
-		fmt.Println("fee:", eth.CalcEthFee(gasPrice, int64(tx.Gas())))
+		fmt.Println("fee:", eth.CalcEthFee(baseParam.GetGasPrice(), int64(tx.Gas())))
 
 		b, _ := json.MarshalIndent(tx, "", " ")
 		fmt.Println("tx:", string(b))
@@ -111,11 +112,13 @@ func TestTransaction(t *testing.T) {
 	var contractAddr common.Address
 
 	{ // deploy contract
-		opts, err := eth.MakeTransactOpts(w0.(*wallet.EthWallet), eth.TransactBaseParam{
+		baseParam := eth.TransactBaseParam{
 			From:     addrA0,
-			GasPrice: gasPrice,
 			EthValue: nil,
-		}, -1, -1)
+		}
+		err = baseParam.EnsureGasPrice(cli.RpcClient)
+		rq.Nil(err)
+		opts, err := eth.MakeTransactOpts(w0.(*wallet.EthWallet), baseParam, -1, -1)
 		rq.Nil(err)
 
 		var tx *types.Transaction
@@ -143,11 +146,13 @@ func TestTransaction(t *testing.T) {
 		fmt.Println("contract total supply:", total)
 		rq.True(total.Cmp(totalSupply) == 0, "Wrong total supply")
 
-		opts, err := eth.MakeTransactOpts(w0.(*wallet.EthWallet), eth.TransactBaseParam{
+		baseParam := eth.TransactBaseParam{
 			From:     addrA0,
-			GasPrice: gasPrice,
 			EthValue: nil,
-		}, -1, -1)
+		}
+		err = baseParam.EnsureGasPrice(cli.RpcClient)
+		rq.Nil(err)
+		opts, err := eth.MakeTransactOpts(w0.(*wallet.EthWallet), baseParam, -1, -1)
 		rq.Nil(err)
 
 		tx, err := contract.Transfer(opts, addrA1, tokenAmount)
