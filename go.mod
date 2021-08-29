@@ -8,6 +8,6 @@ require (
 	github.com/btcsuite/btcwallet/wallet/txauthor v1.0.1
 	github.com/btcsuite/btcwallet/wallet/txrules v1.0.0
 	github.com/btcsuite/btcwallet/wallet/txsizes v1.0.1
-	github.com/ethereum/go-ethereum v1.10.6
+	github.com/ethereum/go-ethereum v1.10.8
 	github.com/tyler-smith/go-bip39 v1.1.0
 )
