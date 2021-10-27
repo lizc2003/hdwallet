@@ -3,11 +3,11 @@ module github.com/lizc2003/hdwallet
 go 1.15
 
 require (
-	github.com/btcsuite/btcd v0.22.0-beta
-	github.com/btcsuite/btcutil v1.0.3-0.20210527170813-e2ba6805a890
-	github.com/btcsuite/btcwallet/wallet/txauthor v1.0.1
-	github.com/btcsuite/btcwallet/wallet/txrules v1.0.0
-	github.com/btcsuite/btcwallet/wallet/txsizes v1.0.1
-	github.com/ethereum/go-ethereum v1.10.8
+	github.com/btcsuite/btcd v0.22.0-beta.0.20211026140004-31791ba4dc6e
+	github.com/btcsuite/btcutil v1.0.3-0.20210929233259-9cdf59f60c51
+	github.com/btcsuite/btcwallet/wallet/txauthor v1.1.0
+	github.com/btcsuite/btcwallet/wallet/txrules v1.1.0
+	github.com/btcsuite/btcwallet/wallet/txsizes v1.1.0
+	github.com/ethereum/go-ethereum v1.10.11
 	github.com/tyler-smith/go-bip39 v1.1.0
 )
