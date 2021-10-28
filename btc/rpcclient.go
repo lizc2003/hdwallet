@@ -5,25 +5,45 @@ import (
 	"errors"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/lizc2003/hdwallet/wallet"
+	"net/url"
 )
 
 type BtcClient struct {
 	RpcClient *rpcclient.Client
 }
 
-func NewBtcClient(host string, user string, pass string, chainId int) (*BtcClient, error) {
+func NewBtcClient(URL string, user string, pass string, chainId int) (*BtcClient, error) {
 	chainCfg, err := wallet.GetBtcChainConfig(chainId)
 	if err != nil {
 		return nil, err
 	}
+
 	connCfg := &rpcclient.ConnConfig{
-		Host:         host,
-		User:         user,
-		Pass:         pass,
-		HTTPPostMode: true, // Bitcoin core only supports HTTP POST mode
-		DisableTLS:   true, // Bitcoin core does not provide TLS by default
-		Params:       chainCfg.Name,
+		User:   user,
+		Pass:   pass,
+		Params: chainCfg.Name,
 	}
+
+	u, err := url.Parse(URL)
+	if err != nil {
+		return nil, err
+	}
+	if u.Scheme == "http" || u.Scheme == "https" {
+		connCfg.HTTPPostMode = true
+		connCfg.Host = u.Host + u.Path
+		if u.Scheme == "http" {
+			connCfg.DisableTLS = true
+		}
+	} else if u.Scheme == "ws" || u.Scheme == "wss" {
+		connCfg.Host = u.Host
+		if u.Path != "" {
+			connCfg.Endpoint = u.Path[1:]
+		}
+		if u.Scheme == "ws" {
+			connCfg.DisableTLS = true
+		}
+	}
+
 	// Notice the notification parameter is nil since notifications are
 	// not supported in HTTP POST mode.
 	client, err := rpcclient.New(connCfg, nil)
