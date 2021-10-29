@@ -134,6 +134,10 @@ func (w *BtcWallet) DerivePrivateKey() string {
 	return wif.String()
 }
 
+func (w *BtcWallet) DeriveBtcPrivateKey() *btcec.PrivateKey {
+	return w.privateKey
+}
+
 func DerivePrivateKeyByPath(masterKey *hdkeychain.ExtendedKey, path string, fixIssue172 bool) (*btcec.PrivateKey, error) {
 	dpath, err := accounts.ParseDerivationPath(path)
 	if err != nil {

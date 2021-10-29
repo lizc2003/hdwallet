@@ -96,6 +96,10 @@ func (w *EthWallet) DerivePrivateKey() string {
 	return hex.EncodeToString(crypto.FromECDSA(w.privateKey))
 }
 
+func (w *EthWallet) DeriveEthPrivateKey() *ecdsa.PrivateKey {
+	return w.privateKey
+}
+
 func derivePublicKey(privateKey *ecdsa.PrivateKey) (*ecdsa.PublicKey, error) {
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)

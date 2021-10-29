@@ -2,6 +2,7 @@ package btc
 
 import (
 	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcwallet/wallet/txauthor"
 	"github.com/btcsuite/btcwallet/wallet/txrules"
@@ -10,6 +11,10 @@ import (
 
 func DecodeAddress(addr string, chainCfg *chaincfg.Params) (btcutil.Address, error) {
 	return btcutil.DecodeAddress(addr, chainCfg)
+}
+
+func HexToHash(s string) (*chainhash.Hash, error) {
+	return chainhash.NewHashFromStr(s)
 }
 
 func BtcToSatoshi(v float64) int64 {

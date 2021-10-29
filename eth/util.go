@@ -18,6 +18,10 @@ func HexToAddress(addr string) (common.Address, error) {
 	return common.HexToAddress(addr), nil
 }
 
+func HexToHash(s string) common.Hash {
+	return common.HexToHash(s)
+}
+
 func WeiToGwei(v *big.Int) int64 {
 	return big.NewInt(0).Div(v, BigIntEthGWei).Int64()
 }
