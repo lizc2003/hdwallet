@@ -48,7 +48,7 @@ const (
 
 var IsFixIssue172 = false
 
-func GetBtcChainConfig(chainId int) (*chaincfg.Params, error) {
+func GetBtcChainParams(chainId int) (*chaincfg.Params, error) {
 	switch chainId {
 	case BtcChainMainNet:
 		return &chaincfg.MainNetParams, nil
@@ -63,7 +63,7 @@ func GetBtcChainConfig(chainId int) (*chaincfg.Params, error) {
 	}
 }
 
-func GetEthChainConfig(chainId int) (*params.ChainConfig, error) {
+func GetEthChainParams(chainId int) (*params.ChainConfig, error) {
 	switch chainId {
 	case ChainMainNet:
 		return params.MainnetChainConfig, nil
@@ -125,11 +125,11 @@ func MakeBipXPath(bipType int, symbol string, chainId int, accountIndex, changeT
 	case SymbolEth:
 		coinType = 60
 	case SymbolBtc:
-		chainCfg, err := GetBtcChainConfig(chainId)
+		chainParams, err := GetBtcChainParams(chainId)
 		if err != nil {
 			return "", err
 		}
-		coinType = int(chainCfg.HDCoinType)
+		coinType = int(chainParams.HDCoinType)
 	case SymbolTrx:
 		coinType = 195
 	default:

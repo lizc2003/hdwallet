@@ -7,21 +7,20 @@ import (
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcutil/hdkeychain"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/params"
 )
 
 type EthWallet struct {
-	symbol     string
-	chainId    int
-	chainCfg   *params.ChainConfig
-	privateKey *ecdsa.PrivateKey
-	publicKey  *ecdsa.PublicKey
+	symbol      string
+	chainId     int
+	chainParams *params.ChainConfig
+	privateKey  *ecdsa.PrivateKey
+	publicKey   *ecdsa.PublicKey
 }
 
 func NewEthWallet(privateKey string, chainId int) (*EthWallet, error) {
-	chainCfg, err := GetEthChainConfig(chainId)
+	chainParams, err := GetEthChainParams(chainId)
 	if err != nil {
 		return nil, err
 	}
@@ -37,12 +36,12 @@ func NewEthWallet(privateKey string, chainId int) (*EthWallet, error) {
 	}
 
 	return &EthWallet{symbol: SymbolEth,
-		chainId: chainId, chainCfg: chainCfg,
+		chainId: chainId, chainParams: chainParams,
 		privateKey: privKey, publicKey: publicKey}, nil
 }
 
 func NewEthWalletByPath(path string, seed []byte, chainId int) (*EthWallet, error) {
-	chainCfg, err := GetEthChainConfig(chainId)
+	chainParams, err := GetEthChainParams(chainId)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +63,7 @@ func NewEthWalletByPath(path string, seed []byte, chainId int) (*EthWallet, erro
 	}
 
 	return &EthWallet{symbol: SymbolEth,
-		chainId: chainId, chainCfg: chainCfg,
+		chainId: chainId, chainParams: chainParams,
 		privateKey: privateKey, publicKey: publicKey}, nil
 }
 
@@ -73,7 +72,7 @@ func (w *EthWallet) ChainId() int {
 }
 
 func (w *EthWallet) ChainParams() *params.ChainConfig {
-	return w.chainCfg
+	return w.chainParams
 }
 
 func (w *EthWallet) Symbol() string {
@@ -108,14 +107,4 @@ func derivePublicKey(privateKey *ecdsa.PrivateKey) (*ecdsa.PublicKey, error) {
 	}
 
 	return publicKeyECDSA, nil
-}
-
-func (w *EthWallet) SignTx(tx *types.Transaction) (*types.Transaction, error) {
-	signer := types.LatestSigner(w.chainCfg)
-	signedTx, err := types.SignTx(tx, signer, w.privateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return signedTx, nil
 }

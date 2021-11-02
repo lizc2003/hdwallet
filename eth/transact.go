@@ -64,6 +64,16 @@ func (this *TransactBaseParam) GetGasPrice() *big.Int {
 	}
 }
 
+func SignTx(w *wallet.EthWallet, tx *types.Transaction) (*types.Transaction, error) {
+	signer := types.LatestSigner(w.ChainParams())
+	signedTx, err := types.SignTx(tx, signer, w.DeriveEthPrivateKey())
+	if err != nil {
+		return nil, err
+	}
+
+	return signedTx, nil
+}
+
 func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int64, nonce int64) (*bind.TransactOpts, error) {
 	var theNonce *big.Int
 	if nonce >= 0 {
@@ -78,7 +88,7 @@ func MakeTransactOpts(w *wallet.EthWallet, param TransactBaseParam, gasLimit int
 		From:  param.From,
 		Nonce: theNonce,
 		Signer: func(address common.Address, tx *types.Transaction) (*types.Transaction, error) {
-			return w.SignTx(tx)
+			return SignTx(w, tx)
 		},
 		Value:     param.EthValue,
 		GasPrice:  param.GasPrice,

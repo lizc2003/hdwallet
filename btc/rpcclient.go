@@ -13,7 +13,7 @@ type BtcClient struct {
 }
 
 func NewBtcClient(URL string, user string, pass string, chainId int) (*BtcClient, error) {
-	chainCfg, err := wallet.GetBtcChainConfig(chainId)
+	chainCfg, err := wallet.GetBtcChainParams(chainId)
 	if err != nil {
 		return nil, err
 	}

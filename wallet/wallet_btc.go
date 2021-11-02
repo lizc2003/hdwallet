@@ -15,15 +15,15 @@ import (
 var ErrAddressNotMatch = errors.New("address not match")
 
 type BtcWallet struct {
-	symbol     string
-	segWitType SegWitType
-	chainCfg   *chaincfg.Params
-	privateKey *btcec.PrivateKey
-	publicKey  *btcec.PublicKey
+	symbol      string
+	segWitType  SegWitType
+	chainParams *chaincfg.Params
+	privateKey  *btcec.PrivateKey
+	publicKey   *btcec.PublicKey
 }
 
 func NewBtcWallet(privateKey string, chainId int, segWitType SegWitType) (*BtcWallet, error) {
-	chainCfg, err := GetBtcChainConfig(chainId)
+	chainParams, err := GetBtcChainParams(chainId)
 	if err != nil {
 		return nil, err
 	}
@@ -32,22 +32,22 @@ func NewBtcWallet(privateKey string, chainId int, segWitType SegWitType) (*BtcWa
 	if err != nil {
 		return nil, err
 	}
-	if !wif.IsForNet(chainCfg) {
+	if !wif.IsForNet(chainParams) {
 		return nil, errors.New("key network doesn't match")
 	}
 
 	return &BtcWallet{symbol: SymbolBtc,
-		chainCfg: chainCfg, segWitType: segWitType,
+		chainParams: chainParams, segWitType: segWitType,
 		privateKey: wif.PrivKey,
 		publicKey:  wif.PrivKey.PubKey()}, nil
 }
 
 func NewBtcWalletByPath(path string, seed []byte, chainId int, segWitType SegWitType) (*BtcWallet, error) {
-	chainCfg, err := GetBtcChainConfig(chainId)
+	chainParams, err := GetBtcChainParams(chainId)
 	if err != nil {
 		return nil, err
 	}
-	masterKey, err := hdkeychain.NewMaster(seed, chainCfg)
+	masterKey, err := hdkeychain.NewMaster(seed, chainParams)
 	if err != nil {
 		return nil, err
 	}
@@ -58,17 +58,17 @@ func NewBtcWalletByPath(path string, seed []byte, chainId int, segWitType SegWit
 	}
 
 	return &BtcWallet{symbol: SymbolBtc,
-		chainCfg: chainCfg, segWitType: segWitType,
+		chainParams: chainParams, segWitType: segWitType,
 		privateKey: privateKey,
 		publicKey:  privateKey.PubKey()}, nil
 }
 
 func (w *BtcWallet) ChainId() int {
-	return int(w.chainCfg.Net)
+	return int(w.chainParams.Net)
 }
 
 func (w *BtcWallet) ChainParams() *chaincfg.Params {
-	return w.chainCfg
+	return w.chainParams
 }
 
 func (w *BtcWallet) Symbol() string {
@@ -80,7 +80,7 @@ func (w *BtcWallet) DeriveBtcAddress() btcutil.Address {
 	case SegWitNone:
 		pk := w.publicKey.SerializeCompressed()
 		keyHash := btcutil.Hash160(pk)
-		p2pkhAddr, err := btcutil.NewAddressPubKeyHash(keyHash, w.chainCfg)
+		p2pkhAddr, err := btcutil.NewAddressPubKeyHash(keyHash, w.chainParams)
 		if err != nil {
 			log.Println("DeriveAddress error:", err)
 			return nil
@@ -94,7 +94,7 @@ func (w *BtcWallet) DeriveBtcAddress() btcutil.Address {
 			log.Println("DeriveAddress error:", err)
 			return nil
 		}
-		addr, err := btcutil.NewAddressScriptHash(scriptSig, w.chainCfg)
+		addr, err := btcutil.NewAddressScriptHash(scriptSig, w.chainParams)
 		if err != nil {
 			log.Println("DeriveAddress error:", err)
 			return nil
@@ -103,7 +103,7 @@ func (w *BtcWallet) DeriveBtcAddress() btcutil.Address {
 	case SegWitNative:
 		pk := w.publicKey.SerializeCompressed()
 		keyHash := btcutil.Hash160(pk)
-		p2wpkh, err := btcutil.NewAddressWitnessPubKeyHash(keyHash, w.chainCfg)
+		p2wpkh, err := btcutil.NewAddressWitnessPubKeyHash(keyHash, w.chainParams)
 		if err != nil {
 			log.Println("DeriveAddress error:", err)
 			return nil
@@ -126,7 +126,7 @@ func (w *BtcWallet) DerivePublicKey() string {
 }
 
 func (w *BtcWallet) DerivePrivateKey() string {
-	wif, err := btcutil.NewWIF(w.privateKey, w.chainCfg, true)
+	wif, err := btcutil.NewWIF(w.privateKey, w.chainParams, true)
 	if err != nil {
 		log.Println("DerivePrivateKey error:", err)
 		return ""

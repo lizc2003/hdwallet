@@ -31,7 +31,7 @@ func TestTransaction(t *testing.T) {
 	w1, err := hdw.NewWallet(wallet.SymbolEth, 0, 0, 1)
 	rq.Nil(err)
 
-	//chainCfg, _ := wallet.GetBtcChainConfig(btcChainId)
+	//chainCfg, _ := wallet.GetBtcChainParams(btcChainId)
 	a0 := w0.DeriveAddress()
 	a1 := w1.DeriveAddress()
 	fmt.Printf("a0: %s\na1: %s\n", a0, a1)

@@ -114,7 +114,7 @@ func RunBitcoind(optionsPtr *RunOptions) (*btc.BtcClient, func(), error) {
 		<-closeChan
 	}
 
-	host := fmt.Sprintf("127.0.0.1:%d", options.RPCPort)
+	host := fmt.Sprintf("http://127.0.0.1:%d", options.RPCPort)
 	cli, err := btc.NewBtcClient(host, "rpcusr", "233", wallet.BtcChainRegtest)
 	if err != nil {
 		killFunc()

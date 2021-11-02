@@ -14,8 +14,8 @@ type EthClient struct {
 	client    *rpc.Client
 }
 
-func NewEthClient(rawurl string) (*EthClient, error) {
-	client, err := rpc.Dial(rawurl)
+func NewEthClient(URL string) (*EthClient, error) {
+	client, err := rpc.Dial(URL)
 	if err != nil {
 		return nil, err
 	}
