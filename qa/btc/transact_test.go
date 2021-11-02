@@ -37,16 +37,16 @@ func TestTransaction(t *testing.T) {
 	w3, err := hdw.NewNativeSegWitWallet(0, 0, 1)
 	rq.Nil(err)
 
-	chainCfg, _ := wallet.GetBtcChainParams(btcChainId)
+	chainParams, _ := wallet.GetBtcChainParams(btcChainId)
 	a0 := w0.DeriveAddress()
 	a1 := w1.DeriveAddress()
 	a2 := w2.DeriveAddress()
 	a3 := w3.DeriveAddress()
 	fmt.Printf("a0: %s\na1: %s\na2: %s\na3: %s\n", a0, a1, a2, a3)
-	addrA0, _ := btc.DecodeAddress(a0, chainCfg)
-	addrA1, _ := btc.DecodeAddress(a1, chainCfg)
-	addrA2, _ := btc.DecodeAddress(a2, chainCfg)
-	addrA3, _ := btc.DecodeAddress(a3, chainCfg)
+	addrA0, _ := btc.DecodeAddress(a0, chainParams)
+	addrA1, _ := btc.DecodeAddress(a1, chainParams)
+	addrA2, _ := btc.DecodeAddress(a2, chainParams)
+	addrA3, _ := btc.DecodeAddress(a3, chainParams)
 
 	{
 		for _, ad := range []string{a0, a1, a2, a3} {
@@ -87,7 +87,7 @@ func TestTransaction(t *testing.T) {
 		out3 := btc.BtcOutput{Address: addrA3, Amount: btc.BtcToSatoshi(transferAmount)}
 
 		tx, err = btc.NewBtcTransaction([]btc.BtcUnspent{unspent}, []btc.BtcOutput{out1, out2, out3},
-			addrA0, feePerKb, chainCfg)
+			addrA0, feePerKb, chainParams)
 		rq.Nil(err)
 	}
 

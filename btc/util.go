@@ -9,8 +9,8 @@ import (
 	"github.com/btcsuite/btcwallet/wallet/txsizes"
 )
 
-func DecodeAddress(addr string, chainCfg *chaincfg.Params) (btcutil.Address, error) {
-	return btcutil.DecodeAddress(addr, chainCfg)
+func DecodeAddress(addr string, chainParams *chaincfg.Params) (btcutil.Address, error) {
+	return btcutil.DecodeAddress(addr, chainParams)
 }
 
 func HexToHash(s string) (*chainhash.Hash, error) {

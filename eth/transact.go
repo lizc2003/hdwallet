@@ -66,7 +66,7 @@ func (this *TransactBaseParam) GetGasPrice() *big.Int {
 
 func SignTx(w *wallet.EthWallet, tx *types.Transaction) (*types.Transaction, error) {
 	signer := types.LatestSigner(w.ChainParams())
-	signedTx, err := types.SignTx(tx, signer, w.DeriveEthPrivateKey())
+	signedTx, err := types.SignTx(tx, signer, w.DeriveNativePrivateKey())
 	if err != nil {
 		return nil, err
 	}

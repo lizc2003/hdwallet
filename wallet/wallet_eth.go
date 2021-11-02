@@ -30,7 +30,7 @@ func NewEthWallet(privateKey string, chainId int) (*EthWallet, error) {
 		return nil, err
 	}
 
-	publicKey, err := derivePublicKey(privKey)
+	publicKey, err := DerivePublicKey(privKey)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func NewEthWalletByPath(path string, seed []byte, chainId int) (*EthWallet, erro
 	}
 	privateKey := privKey.ToECDSA()
 
-	publicKey, err := derivePublicKey(privateKey)
+	publicKey, err := DerivePublicKey(privateKey)
 	if err != nil {
 		return nil, err
 	}
@@ -79,10 +79,6 @@ func (w *EthWallet) Symbol() string {
 	return w.symbol
 }
 
-func (w *EthWallet) DeriveEthAddress() common.Address {
-	return crypto.PubkeyToAddress(*w.publicKey)
-}
-
 func (w *EthWallet) DeriveAddress() string {
 	return crypto.PubkeyToAddress(*w.publicKey).Hex()
 }
@@ -95,11 +91,15 @@ func (w *EthWallet) DerivePrivateKey() string {
 	return hex.EncodeToString(crypto.FromECDSA(w.privateKey))
 }
 
-func (w *EthWallet) DeriveEthPrivateKey() *ecdsa.PrivateKey {
+func (w *EthWallet) DeriveNativeAddress() common.Address {
+	return crypto.PubkeyToAddress(*w.publicKey)
+}
+
+func (w *EthWallet) DeriveNativePrivateKey() *ecdsa.PrivateKey {
 	return w.privateKey
 }
 
-func derivePublicKey(privateKey *ecdsa.PrivateKey) (*ecdsa.PublicKey, error) {
+func DerivePublicKey(privateKey *ecdsa.PrivateKey) (*ecdsa.PublicKey, error) {
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {

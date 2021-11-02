@@ -75,7 +75,28 @@ func (w *BtcWallet) Symbol() string {
 	return w.symbol
 }
 
-func (w *BtcWallet) DeriveBtcAddress() btcutil.Address {
+func (w *BtcWallet) DeriveAddress() string {
+	addr := w.DeriveNativeAddress()
+	if addr != nil {
+		return addr.EncodeAddress()
+	}
+	return ""
+}
+
+func (w *BtcWallet) DerivePublicKey() string {
+	return hex.EncodeToString(w.publicKey.SerializeCompressed())
+}
+
+func (w *BtcWallet) DerivePrivateKey() string {
+	wif, err := btcutil.NewWIF(w.privateKey, w.chainParams, true)
+	if err != nil {
+		log.Println("DerivePrivateKey error:", err)
+		return ""
+	}
+	return wif.String()
+}
+
+func (w *BtcWallet) DeriveNativeAddress() btcutil.Address {
 	switch w.segWitType {
 	case SegWitNone:
 		pk := w.publicKey.SerializeCompressed()
@@ -113,28 +134,7 @@ func (w *BtcWallet) DeriveBtcAddress() btcutil.Address {
 	return nil
 }
 
-func (w *BtcWallet) DeriveAddress() string {
-	addr := w.DeriveBtcAddress()
-	if addr != nil {
-		return addr.EncodeAddress()
-	}
-	return ""
-}
-
-func (w *BtcWallet) DerivePublicKey() string {
-	return hex.EncodeToString(w.publicKey.SerializeCompressed())
-}
-
-func (w *BtcWallet) DerivePrivateKey() string {
-	wif, err := btcutil.NewWIF(w.privateKey, w.chainParams, true)
-	if err != nil {
-		log.Println("DerivePrivateKey error:", err)
-		return ""
-	}
-	return wif.String()
-}
-
-func (w *BtcWallet) DeriveBtcPrivateKey() *btcec.PrivateKey {
+func (w *BtcWallet) DeriveNativePrivateKey() *btcec.PrivateKey {
 	return w.privateKey
 }
 

@@ -13,7 +13,7 @@ type BtcClient struct {
 }
 
 func NewBtcClient(URL string, user string, pass string, chainId int) (*BtcClient, error) {
-	chainCfg, err := wallet.GetBtcChainParams(chainId)
+	chainParams, err := wallet.GetBtcChainParams(chainId)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func NewBtcClient(URL string, user string, pass string, chainId int) (*BtcClient
 	connCfg := &rpcclient.ConnConfig{
 		User:   user,
 		Pass:   pass,
-		Params: chainCfg.Name,
+		Params: chainParams.Name,
 	}
 
 	u, err := url.Parse(URL)

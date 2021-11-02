@@ -21,7 +21,7 @@ func NewTrxWallet(privateKey string) (*TrxWallet, error) {
 		return nil, err
 	}
 
-	publicKey, err := derivePublicKey(privKey)
+	publicKey, err := DerivePublicKey(privKey)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func NewTrxWalletByPath(path string, seed []byte) (*TrxWallet, error) {
 	}
 	privateKey := privKey.ToECDSA()
 
-	publicKey, err := derivePublicKey(privateKey)
+	publicKey, err := DerivePublicKey(privateKey)
 	if err != nil {
 		return nil, err
 	}
