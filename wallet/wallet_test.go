@@ -100,6 +100,16 @@ func TestCoin_MakeAddressTestnet(t *testing.T) {
 	require.Equal(t, privateKey, "63191752898f7a7f20caa49da570d67e4fc0c2623a92c2fe3401d427a2de77aa")
 	require.Equal(t, publicKey, "042740014857de4394a29515a7a80f192e5a335440d20ad73d662901e7f82720f6060b63b470a5a31ec45deba053b259966e3fed3c62b0fd6371abb4120d53555e")
 	require.Equal(t, address, "0x3295Db1E775723c752511c4E4caA400dbaf2240F")
+
+	w, err = hdw.NewWallet(SymbolTrx, 0, 0, 0)
+	require.NoError(t, err)
+
+	privateKey = w.DerivePrivateKey()
+	publicKey = w.DerivePublicKey()
+	address = w.DeriveAddress()
+	require.Equal(t, privateKey, "9023544417f445b68ea3e334dea93337b13b562db1914d5e5a658e00803efc46")
+	require.Equal(t, publicKey, "047a70595cb622ac822893f9cb5acc64c59286c7afd3151b8ebd094b3bf1041e6e35f0f5f3d919b7ff3af2a526f98b9bd5f0ef30d9739f29be5aa667cf7cedaf07")
+	require.Equal(t, address, "TR1Sxne61QPnjk5o7p38JDs15fcxirSEk1")
 }
 
 func TestCoin_SegWitAddress(t *testing.T) {

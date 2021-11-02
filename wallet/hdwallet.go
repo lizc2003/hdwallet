@@ -56,6 +56,8 @@ func (this *HDWallet) NewWalletByPath(symbol string, path string, segWitType Seg
 		w, err = NewBtcWalletByPath(path, this.seed, this.btcChainId, segWitType)
 	case SymbolEth:
 		w, err = NewEthWalletByPath(path, this.seed, this.ethChainId)
+	case SymbolTrx:
+		w, err = NewTrxWalletByPath(path, this.seed)
 	default:
 		err = fmt.Errorf("invalid symbol: %s", symbol)
 	}

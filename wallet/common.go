@@ -16,6 +16,7 @@ type SegWitType int
 const (
 	SymbolEth = "ETH"
 	SymbolBtc = "BTC"
+	SymbolTrx = "TRX"
 
 	BtcChainMainNet  = int(wire.MainNet)
 	BtcChainTestNet3 = int(wire.TestNet3)
@@ -129,6 +130,8 @@ func MakeBipXPath(bipType int, symbol string, chainId int, accountIndex, changeT
 			return "", err
 		}
 		coinType = int(chainCfg.HDCoinType)
+	case SymbolTrx:
+		coinType = 195
 	default:
 		return "", fmt.Errorf("invalid symbol: %s", symbol)
 	}
