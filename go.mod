@@ -9,5 +9,8 @@ require (
 	github.com/btcsuite/btcwallet/wallet/txrules v1.1.0
 	github.com/btcsuite/btcwallet/wallet/txsizes v1.1.0
 	github.com/ethereum/go-ethereum v1.10.11
+	github.com/fbsobreira/gotron-sdk v0.0.0-20211102183839-58a64f4da5f4
 	github.com/tyler-smith/go-bip39 v1.1.0
+	google.golang.org/grpc v1.37.0
+	google.golang.org/protobuf v1.25.0
 )

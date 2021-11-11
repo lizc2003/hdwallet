@@ -71,3 +71,7 @@ func (w *TrxWallet) DerivePublicKey() string {
 func (w *TrxWallet) DerivePrivateKey() string {
 	return hex.EncodeToString(crypto.FromECDSA(w.privateKey))
 }
+
+func (w *TrxWallet) DeriveNativePrivateKey() *ecdsa.PrivateKey {
+	return w.privateKey
+}

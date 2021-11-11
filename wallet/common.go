@@ -37,6 +37,7 @@ const (
 	ChangeTypeInternal = 1 // Usually used for change, not visible to the outside world
 
 	SatoshiPerBitcoin = 1e8
+	SunPerTrx         = 1e6
 	GweiPerEther      = 1e9
 	WeiPerGwei        = 1e9
 	WeiPerEther       = 1e18

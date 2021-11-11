@@ -62,7 +62,7 @@ func (this *Erc20Contract) Symbol() (string, error) {
 	return *ret0, err
 }
 
-func (this *Erc20Contract) Decimals() (uint8, error) {
+func (this *Erc20Contract) Decimals() (int, error) {
 	var (
 		ret0 = new(uint8)
 	)
@@ -71,7 +71,7 @@ func (this *Erc20Contract) Decimals() (uint8, error) {
 	if err != nil {
 		return 0, err
 	}
-	return *ret0, err
+	return int(*ret0), err
 }
 
 func (this *Erc20Contract) BalanceOf(tokenOwner common.Address) (*big.Int, error) {

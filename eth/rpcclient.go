@@ -23,6 +23,12 @@ func NewEthClient(URL string) (*EthClient, error) {
 	return &EthClient{RpcClient: rpcClient, client: client}, nil
 }
 
+func (this *EthClient) SetHeader(key, value string) {
+	if this.client != nil {
+		this.client.SetHeader(key, value)
+	}
+}
+
 func (this *EthClient) GetTransactionCountByNumber(ctx context.Context, blockNumber int64) (uint, error) {
 	var num hexutil.Uint
 	err := this.client.CallContext(ctx, &num, "eth_getBlockTransactionCountByNumber", hexutil.EncodeBig(big.NewInt(blockNumber)))
