@@ -98,6 +98,13 @@ func TestTransaction(t *testing.T) {
 		to := "TSGYZ3VAVsa2SgoYhV7mfqnde89zTU7zNh"
 		sendAmount := big.NewInt(50)
 		contract := trx.NewErc20Contract(trc20Addr, client.RpcClient)
+		fmt.Print("Contract name: ")
+		fmt.Println(contract.Name())
+		fmt.Print("Contract symbol: ")
+		fmt.Println(contract.Symbol())
+		fmt.Print("Contract decimals: ")
+		fmt.Println(contract.Decimals())
+
 		txId, err := contract.Transfer(w, to, sendAmount, 999999)
 		require.NoError(t, err)
 
