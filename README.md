@@ -20,4 +20,4 @@ eth erc721
 ## JetBrains OS licenses
 hdwallet has been being developed with GoLand under the free JetBrains Open Source licenses granted by JetBrains. I would like to express my thanks here.
 
-<a href="https://jb.gg/OpenSourceSupport"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/GoLand_icon.png" align="left" height="128" width="128" ></a>
+<a href="https://jb.gg/OpenSourceSupport"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/GoLand_icon.png" align="left" height="96" width="96"></a>
