@@ -23,6 +23,8 @@ func TestTransaction(t *testing.T) {
 	rq.Nil(err)
 
 	ethChainId := wallet.ChainPrivate
+	chainParam, err := wallet.GetEthChainParams(ethChainId)
+	rq.Nil(err)
 	hdw, err := wallet.NewHDWallet(mnemonic, "", wallet.BtcChainMainNet, ethChainId)
 	rq.Nil(err)
 
@@ -86,6 +88,21 @@ func TestTransaction(t *testing.T) {
 		b, _ := json.MarshalIndent(tx, "", " ")
 		fmt.Println("tx:", string(b))
 
+		fmt.Println("get transaction receipt ----------")
+
+		tx2, from, blockNumber, err := cli.TransactionByHash(context.Background(), tx.Hash())
+		rq.Nil(err)
+		rq.True(from.String() == a0)
+
+		receipt, err := cli.RpcClient.TransactionReceipt(context.Background(), tx.Hash())
+		rq.Nil(err)
+		fmt.Println("tx block number:", receipt.BlockNumber)
+		rq.True(receipt.BlockNumber.Cmp(blockNumber) == 0)
+		sig := types.MakeSigner(chainParam, receipt.BlockNumber)
+		msg, err := tx2.AsMessage(sig, nil)
+		rq.Nil(err)
+		fmt.Println("tx from address:", msg.From())
+		rq.True(msg.From().String() == a0)
 	}
 
 	{ // confirm transfer
