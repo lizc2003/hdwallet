@@ -188,6 +188,12 @@ func TestTransaction(t *testing.T) {
 		receipt, err := cli.RpcClient.TransactionReceipt(context.Background(), tx.Hash())
 		rq.Nil(err)
 		fmt.Printf("transfer token, txid: %s, gas limit: %d, gas used: %d\n", tx.Hash().String(), tx.Gas(), receipt.GasUsed)
+
+		blockNum := receipt.BlockNumber.Int64()
+		evts, err := eth.FilterTransferLog(cli.RpcClient, blockNum, blockNum, []common.Address{contractAddr})
+		rq.Nil(err)
+		fmt.Printf("query transfer log: %+v\n", evts)
+		rq.True(len(evts) == 1)
 	}
 
 	{ // confirm transfer erc20
