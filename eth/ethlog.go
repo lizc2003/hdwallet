@@ -25,7 +25,7 @@ type TransferEvent struct {
 	Value           string
 }
 
-func FilterTransferLog(cli *ethclient.Client, fromBlock int64, toBlock int64, contractAddresses []common.Address) ([]TransferEvent, error) {
+func FilterTransferLog(cli *ethclient.Client, fromBlock int64, toBlock int64, contractAddresses []common.Address) ([]*TransferEvent, error) {
 	//hex.EncodeToString(crypto.Keccak256Hash([]byte("Transfer(address,address,uint256)")).Bytes()))
 	transferTopic := "ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 	logs, err := cli.FilterLogs(context.Background(), ethereum.FilterQuery{
@@ -38,10 +38,10 @@ func FilterTransferLog(cli *ethclient.Client, fromBlock int64, toBlock int64, co
 		return nil, err
 	}
 
-	var evts []TransferEvent
+	var evts []*TransferEvent
 	sz := len(logs)
 	if sz > 0 {
-		evts = make([]TransferEvent, 0, sz)
+		evts = make([]*TransferEvent, 0, sz)
 		for i := 0; i < sz; i++ {
 			log := &logs[i]
 			topicLen := len(log.Topics)
@@ -73,7 +73,7 @@ func FilterTransferLog(cli *ethclient.Client, fromBlock int64, toBlock int64, co
 						ContractAddress: strings.ToLower(log.Address.String()),
 						From:            from, To: to, Value: val,
 					}
-					evts = append(evts, evt)
+					evts = append(evts, &evt)
 				}
 			}
 		}
