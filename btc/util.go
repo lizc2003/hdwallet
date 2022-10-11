@@ -1,9 +1,9 @@
 package btc
 
 import (
+	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcwallet/wallet/txauthor"
 	"github.com/btcsuite/btcwallet/wallet/txrules"
 	"github.com/btcsuite/btcwallet/wallet/txsizes"
@@ -41,7 +41,7 @@ func EstimateFee(numP2PKHIns, numP2WPKHIns, numNestedP2WPKHIns int,
 		return 0, 0, err
 	}
 
-	maxSignedSize := txsizes.EstimateVirtualSize(numP2PKHIns, numP2WPKHIns,
+	maxSignedSize := txsizes.EstimateVirtualSize(numP2PKHIns, 0, numP2WPKHIns,
 		numNestedP2WPKHIns, txOuts, changeScriptSize)
 
 	targetFee := txrules.FeeForSerializeSize(feeRatePerKb, maxSignedSize)

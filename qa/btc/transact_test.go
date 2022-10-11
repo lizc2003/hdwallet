@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/btcsuite/btcd/btcjson"
-	"github.com/btcsuite/btcutil"
+	"github.com/btcsuite/btcd/btcutil"
 	"github.com/lizc2003/hdwallet/btc"
 	"github.com/lizc2003/hdwallet/wallet"
 	"github.com/stretchr/testify/require"

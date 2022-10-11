@@ -1,19 +1,21 @@
 module github.com/lizc2003/hdwallet
 
-go 1.17
+go 1.19
 
 require (
-	github.com/btcsuite/btcd v0.22.0-beta.0.20211026140004-31791ba4dc6e
-	github.com/btcsuite/btcutil v1.0.3-0.20210929233259-9cdf59f60c51
-	github.com/btcsuite/btcwallet/wallet/txauthor v1.1.0
-	github.com/btcsuite/btcwallet/wallet/txrules v1.1.0
-	github.com/btcsuite/btcwallet/wallet/txsizes v1.1.0
-	github.com/ethereum/go-ethereum v1.10.13
-	github.com/fbsobreira/gotron-sdk v0.0.0-20211102183839-58a64f4da5f4
-	github.com/stretchr/testify v1.7.0
+	github.com/btcsuite/btcd v0.23.2
+	github.com/btcsuite/btcd/btcec/v2 v2.2.1
+	github.com/btcsuite/btcd/btcutil v1.1.2
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1
+	github.com/btcsuite/btcwallet/wallet/txauthor v1.3.2
+	github.com/btcsuite/btcwallet/wallet/txrules v1.2.0
+	github.com/btcsuite/btcwallet/wallet/txsizes v1.2.3
+	github.com/ethereum/go-ethereum v1.10.25
+	github.com/lizc2003/gotron-sdk v0.0.0-20221010131620-2fa8f18bda85
+	github.com/stretchr/testify v1.7.2
 	github.com/tyler-smith/go-bip39 v1.1.0
 	google.golang.org/grpc v1.37.0
-	google.golang.org/protobuf v1.25.0
+	google.golang.org/protobuf v1.26.0
 )
 
 require (
@@ -23,11 +25,13 @@ require (
 	github.com/btcsuite/go-socks v0.0.0-20170105172521-4720035b7bfd // indirect
 	github.com/btcsuite/websocket v0.0.0-20150119174127-31079b680792 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/deckarep/golang-set v1.7.1 // indirect
+	github.com/deckarep/golang-set v1.8.0 // indirect
+	github.com/decred/dcrd/crypto/blake256 v1.0.0 // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/golang/protobuf v1.4.3 // indirect
-	github.com/google/uuid v1.1.5 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/uuid v1.2.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/kkdai/bstream v0.0.0-20161212061736-f391b8402d23 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -43,10 +47,10 @@ require (
 	go.uber.org/multierr v1.5.0 // indirect
 	go.uber.org/zap v1.15.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
-	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
-	golang.org/x/sys v0.0.0-20211102061401-a2f17f7b995c // indirect
-	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/net v0.0.0-20220607020251-c690dde0001d // indirect
+	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20200825200019-8632dd797987 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

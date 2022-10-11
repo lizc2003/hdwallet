@@ -23,10 +23,11 @@ const (
 	BtcChainRegtest  = int(wire.TestNet)
 	BtcChainSimNet   = int(wire.SimNet)
 
-	ChainMainNet      = 1     // for ETH
-	ChainRopsten      = 3     // for ETH
-	ChainRinkeby      = 4     // for ETH
-	ChainGoerli       = 5     // for ETH
+	ChainMainNet      = 1 // for ETH
+	ChainRopsten      = 3 // for ETH
+	ChainRinkeby      = 4 // for ETH
+	ChainGoerli       = 5 // for ETH
+	ChainSepolia      = 11155111
 	ChainBsc          = 56    // for Binance Smart Chain Mainnet
 	ChainBscTestnet   = 97    // for Binance Smart Chain Testnet
 	ChainMatic        = 137   // for Polygon Matic Mainnet
@@ -78,6 +79,8 @@ func GetEthChainParams(chainId int) (*params.ChainConfig, error) {
 		return params.RinkebyChainConfig, nil
 	case ChainGoerli:
 		return params.GoerliChainConfig, nil
+	case ChainSepolia:
+		return params.SepoliaChainConfig, nil
 	case ChainMatic:
 		return MaticChainConfig, nil
 	case ChainMaticTestnet:
@@ -87,7 +90,7 @@ func GetEthChainParams(chainId int) (*params.ChainConfig, error) {
 	case ChainBscTestnet:
 		return BscTestnetChainConfig, nil
 	case ChainPrivate:
-		return params.TestChainConfig, nil
+		return params.AllEthashProtocolChanges, nil
 	default:
 		return nil, fmt.Errorf("unknown eth chainId: %d", chainId)
 	}

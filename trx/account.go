@@ -1,8 +1,8 @@
 package trx
 
 import (
-	"github.com/fbsobreira/gotron-sdk/pkg/client"
-	"github.com/fbsobreira/gotron-sdk/pkg/proto/core"
+	"github.com/lizc2003/gotron-sdk/pkg/client"
+	"github.com/lizc2003/gotron-sdk/pkg/proto/core"
 	"github.com/lizc2003/hdwallet/wallet"
 )
 

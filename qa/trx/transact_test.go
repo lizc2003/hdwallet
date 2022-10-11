@@ -21,7 +21,7 @@ docker run -d -it -p 9090:9090 -p 50051:50051 -p 50052:50052 --rm --name tron \
 	trontools/quickstart
 
 check:
-curl http://127.0.0.1:9090/admin/accounts?format=all
+curl "http://127.0.0.1:9090/admin/accounts?format=all"
 */
 
 func TestTransaction(t *testing.T) {

@@ -6,12 +6,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/btcsuite/btcd/btcjson"
+	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
-	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcwallet/wallet/txauthor"
 	"github.com/lizc2003/hdwallet/wallet"
 )
@@ -86,7 +86,7 @@ func (t *BtcTransaction) SignWithSecretsSource(secretsSource txauthor.SecretsSou
 	if err != nil {
 		return err
 	}
-	err = t.validate()
+	err = validateMsgTx(t.Tx, t.PrevScripts, t.PrevInputValues)
 	if err != nil {
 		return err
 	}
@@ -130,22 +130,6 @@ func (t *BtcTransaction) Send(client *rpcclient.Client, allowHighFees bool) (*ch
 		return nil, err
 	}
 	return hash, nil
-}
-
-func (t *BtcTransaction) validate() error {
-	hashCache := txscript.NewTxSigHashes(t.Tx)
-	for i, prevScript := range t.PrevScripts {
-		vm, err := txscript.NewEngine(prevScript, t.Tx, i,
-			txscript.StandardVerifyFlags, nil, hashCache, int64(t.PrevInputValues[i]))
-		if err != nil {
-			return fmt.Errorf("cannot create script engine: %s", err)
-		}
-		err = vm.Execute()
-		if err != nil {
-			return fmt.Errorf("cannot validate transaction: %s", err)
-		}
-	}
-	return nil
 }
 
 func makeTxOutputs(outputs []BtcOutput, relayFeePerKb btcutil.Amount, chainCfg *chaincfg.Params) ([]*wire.TxOut, error) {
@@ -211,4 +195,34 @@ func makeInputSource(unspents []BtcUnspent) txauthor.InputSource {
 		}
 		return currentTotal, currentInputs, currentInputValues, currentScripts, nil
 	}
+}
+
+// validateMsgTx verifies transaction input scripts for tx.  All previous output
+// scripts from outputs redeemed by the transaction, in the same order they are
+// spent, must be passed in the prevScripts slice.
+func validateMsgTx(tx *wire.MsgTx, prevScripts [][]byte,
+	inputValues []btcutil.Amount) error {
+
+	inputFetcher, err := txauthor.TXPrevOutFetcher(
+		tx, prevScripts, inputValues,
+	)
+	if err != nil {
+		return err
+	}
+
+	hashCache := txscript.NewTxSigHashes(tx, inputFetcher)
+	for i, prevScript := range prevScripts {
+		vm, err := txscript.NewEngine(
+			prevScript, tx, i, txscript.StandardVerifyFlags, nil,
+			hashCache, int64(inputValues[i]), inputFetcher,
+		)
+		if err != nil {
+			return fmt.Errorf("cannot create script engine: %s", err)
+		}
+		err = vm.Execute()
+		if err != nil {
+			return fmt.Errorf("cannot validate transaction: %s", err)
+		}
+	}
+	return nil
 }
