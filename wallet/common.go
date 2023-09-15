@@ -27,6 +27,7 @@ const (
 	ChainRopsten      = 3 // for ETH
 	ChainRinkeby      = 4 // for ETH
 	ChainGoerli       = 5 // for ETH
+	ChainHolesky      = 17000
 	ChainSepolia      = 11155111
 	ChainBsc          = 56    // for Binance Smart Chain Mainnet
 	ChainBscTestnet   = 97    // for Binance Smart Chain Testnet
@@ -73,12 +74,14 @@ func GetEthChainParams(chainId int) (*params.ChainConfig, error) {
 	switch chainId {
 	case ChainMainNet:
 		return params.MainnetChainConfig, nil
-	case ChainRopsten:
-		return params.RopstenChainConfig, nil
-	case ChainRinkeby:
-		return params.RinkebyChainConfig, nil
+	//case ChainRopsten:
+	//	return params.RopstenChainConfig, nil
+	//case ChainRinkeby:
+	//	return params.RinkebyChainConfig, nil
 	case ChainGoerli:
 		return params.GoerliChainConfig, nil
+	case ChainHolesky:
+		return params.HoleskyChainConfig, nil
 	case ChainSepolia:
 		return params.SepoliaChainConfig, nil
 	case ChainMatic:

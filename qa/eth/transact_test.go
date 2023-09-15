@@ -98,11 +98,13 @@ func TestTransaction(t *testing.T) {
 		rq.Nil(err)
 		fmt.Println("tx block number:", receipt.BlockNumber)
 		rq.True(receipt.BlockNumber.Cmp(blockNumber) == 0)
-		sig := types.MakeSigner(chainParam, receipt.BlockNumber)
-		msg, err := tx2.AsMessage(sig, nil)
+		block, err := cli.RpcClient.BlockByNumber(context.Background(), blockNumber)
 		rq.Nil(err)
-		fmt.Println("tx from address:", msg.From())
-		rq.True(msg.From().String() == a0)
+		sig := types.MakeSigner(chainParam, receipt.BlockNumber, block.Time())
+		from2, err := types.Sender(sig, tx2)
+		rq.Nil(err)
+		fmt.Println("tx from address:", from2)
+		rq.True(from2.String() == a0)
 	}
 
 	{ // confirm transfer

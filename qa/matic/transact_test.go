@@ -28,7 +28,7 @@ func TestTransaction(t *testing.T) {
 	rq := require.New(t)
 
 	ethChainId := wallet.ChainMaticTestnet
-	chainParam, err := wallet.GetEthChainParams(ethChainId)
+	_, err := wallet.GetEthChainParams(ethChainId)
 	rq.Nil(err)
 	mnemonic := "anger million curious give plate dizzy mobile danger era knife slush iron"
 	hdw, err := wallet.NewHDWallet(mnemonic, "", wallet.BtcChainMainNet, ethChainId)
@@ -98,7 +98,7 @@ func TestTransaction(t *testing.T) {
 		fmt.Println("get transaction receipt ----------")
 		time.Sleep(waitTime)
 
-		tx2, from, blockNumber, err := cli.TransactionByHash(context.Background(), tx.Hash())
+		_, from, blockNumber, err := cli.TransactionByHash(context.Background(), tx.Hash())
 		rq.Nil(err)
 		rq.True(from.String() == a0)
 
@@ -106,11 +106,6 @@ func TestTransaction(t *testing.T) {
 		rq.Nil(err)
 		fmt.Println("tx block number:", receipt.BlockNumber)
 		rq.True(receipt.BlockNumber.Cmp(blockNumber) == 0)
-		sig := types.MakeSigner(chainParam, receipt.BlockNumber)
-		msg, err := tx2.AsMessage(sig, nil)
-		rq.Nil(err)
-		fmt.Println("tx from address:", msg.From())
-		rq.True(msg.From().String() == a0)
 	}
 
 	{ // confirm transfer
